@@ -25,6 +25,12 @@ async function run() {
             const result = await billingCollection.insertOne(bill);
             res.send(result);
         });
+
+        // Get Api
+        app.post('/billing-list', async (req, res) => {
+            const result = await billingCollection.find().toArray();
+            res.send(result);
+        });
     }
     finally { }
 }
