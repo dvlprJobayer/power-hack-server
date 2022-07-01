@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
 
@@ -23,8 +23,9 @@ const verifyJWT = (req, res, next) => {
         if (err) {
             return res.status(403).send({ message: 'forbidden access' })
         }
+        req.decoded = decoded;
+        next();
     })
-    next();
 }
 
 // Database
@@ -44,7 +45,7 @@ async function run() {
         });
 
         // Get Api
-        app.get('/billing-list', async (req, res) => {
+        app.get('/billing-list', verifyJWT, async (req, res) => {
             const page = parseInt(req.query.page);
             const size = parseInt(req.query.size)
             const cursor = billingCollection.find().sort({ "_id": -1 });
@@ -84,7 +85,7 @@ async function run() {
                 return res.status(404).send({ message: 'The user account does not exist!!!' })
             }
             const accessToken = jwt.sign(email, process.env.TOKEN_SECRET, {
-                expiresIn: 300
+                expiresIn: 60 * 10
             })
             res.json(accessToken);
         });
@@ -100,7 +101,7 @@ async function run() {
             };
             await userCollection.updateOne(filter, updateDoc, options);
             const accessToken = jwt.sign({ email: user.email }, process.env.TOKEN_SECRET, {
-                expiresIn: 300
+                expiresIn: 60 * 10
             })
             res.json(accessToken);
         });
