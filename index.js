@@ -85,7 +85,7 @@ async function run() {
                 return res.status(404).send({ message: 'The user account does not exist!!!' })
             }
             const accessToken = jwt.sign(email, process.env.TOKEN_SECRET, {
-                expiresIn: 60 * 10
+                expiresIn: '1d'
             })
             res.json(accessToken);
         });
@@ -101,7 +101,7 @@ async function run() {
             };
             await userCollection.updateOne(filter, updateDoc, options);
             const accessToken = jwt.sign({ email: user.email }, process.env.TOKEN_SECRET, {
-                expiresIn: 60 * 10
+                expiresIn: '1d'
             })
             res.json(accessToken);
         });
