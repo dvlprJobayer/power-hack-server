@@ -50,6 +50,13 @@ async function run() {
             const result = await billingCollection.deleteOne({ _id: ObjectId(id) });
             res.send(result);
         });
+
+        // Get Page Count
+        app.get('/page-count', async (req, res) => {
+            const count = await billingCollection.estimatedDocumentCount();
+            const result = Math.ceil(count / 10)
+            res.json(result);
+        });
     }
     finally { }
 }
