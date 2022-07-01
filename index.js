@@ -43,6 +43,13 @@ async function run() {
             const result = await billingCollection.updateOne(filter, updateDoc);
             res.send(result);
         });
+
+        // Delete Api
+        app.delete('/delete-billing/:id', async (req, res) => {
+            const { id } = req.params;
+            const result = await billingCollection.deleteOne({ _id: ObjectId(id) });
+            res.send(result);
+        });
     }
     finally { }
 }
