@@ -27,8 +27,20 @@ async function run() {
         });
 
         // Get Api
-        app.post('/billing-list', async (req, res) => {
-            const result = await billingCollection.find().toArray();
+        app.get('/billing-list', async (req, res) => {
+            const result = await billingCollection.find().sort({ "_id": -1 }).toArray();
+            res.send(result);
+        });
+
+        // Update Api
+        app.patch('/update-billing/:id', async (req, res) => {
+            const { id } = req.params;
+            const bill = req.body;
+            const filter = { _id: ObjectId(id) };
+            const updateDoc = {
+                $set: bill
+            };
+            const result = await billingCollection.updateOne(filter, updateDoc);
             res.send(result);
         });
     }
